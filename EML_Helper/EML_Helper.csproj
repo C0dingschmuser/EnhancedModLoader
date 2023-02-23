@@ -1,0 +1,100 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Platforms>AnyCPU;x64</Platforms>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <PublicizerRuntimeStrategies>Unsafe</PublicizerRuntimeStrategies>
+    <AnalysisLevel>6.0</AnalysisLevel>
+    <RuntimeFrameworkVersion>6.0.11</RuntimeFrameworkVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="C:\Users\lasch\.nuget\packages\krafs.publicizer\2.2.1\contentfiles\cs\any\Publicizer\IgnoresAccessChecksToAttribute.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Krafs.Publicizer" Version="2.2.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Lib.Harmony" Version="2.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Publicize Include="Cosmoteer" />
+    <Publicize Include="HalflingCore" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="Cosmoteer">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\Cosmoteer.dll</HintPath>
+    </Reference>
+    <Reference Include="HalflingCore">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\HalflingCore.dll</HintPath>
+    </Reference>
+    <Reference Include="HalflingPlatformWDX">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\HalflingPlatformWDX.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework-SystemCore">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\PresentationFramework-SystemCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework-SystemData">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\PresentationFramework-SystemData.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework-SystemDrawing">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\PresentationFramework-SystemDrawing.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework-SystemXml">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\PresentationFramework-SystemXml.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework-SystemXmlLinq">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\PresentationFramework-SystemXmlLinq.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.Aero">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\PresentationFramework.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.Aero2">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\PresentationFramework.Aero2.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.AeroLite">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\PresentationFramework.AeroLite.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.Classic">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\PresentationFramework.Classic.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.Luna">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\PresentationFramework.Luna.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.Royale">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\PresentationFramework.Royale.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationUI">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\PresentationUI.dll</HintPath>
+    </Reference>
+    <Reference Include="Steamworks.NET">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\Steamworks.NET.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\System.Windows.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms.Design">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\System.Windows.Forms.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms.Design.Editors">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\System.Windows.Forms.Design.Editors.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
