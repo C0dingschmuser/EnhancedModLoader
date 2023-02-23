@@ -204,6 +204,12 @@ DWORD WINAPI dllThread(HMODULE hModule)
     //Give the game time to initialize
     Sleep(1000);
 
+    if (!std::filesystem::exists(s_dll))
+    {
+        MessageBoxA(NULL, "EML_Helper.dll not found!\nCheck eml_config.ini in your Cosmoteer Install directory", "Error", MB_OK | MB_ICONERROR);
+		return 0;
+    }
+
     //Loads helper dll
     LoadDll(config, dll, typeName, methodName);
 
@@ -220,18 +226,22 @@ DWORD WINAPI dllThread(HMODULE hModule)
         for (std::string line; getline(file, line); )
         {
             std::string s_dllPath = line;
-            std::wstring t_dllPath = std::wstring(s_dllPath.begin(), s_dllPath.end());
-            const char_t* dllPath = t_dllPath.c_str();
 
-            //get filename without path and without file extension
-            std::string filename = line.substr(line.find_last_of("\\/") + 1);
-            filename = filename.substr(0, filename.find_last_of("."));
+            if (std::filesystem::exists(s_dllPath))
+            {
+                std::wstring t_dllPath = std::wstring(s_dllPath.begin(), s_dllPath.end());
+                const char_t* dllPath = t_dllPath.c_str();
 
-            std::string s_typeName = filename + ".Main, " + filename;
-            std::wstring t_typeName = std::wstring(s_typeName.begin(), s_typeName.end());
-            const char_t* typeName = t_typeName.c_str();
+                //get filename without path and without file extension
+                std::string filename = line.substr(line.find_last_of("\\/") + 1);
+                filename = filename.substr(0, filename.find_last_of("."));
 
-            LoadDll(config, dllPath, typeName, methodName);
+                std::string s_typeName = filename + ".Main, " + filename;
+                std::wstring t_typeName = std::wstring(s_typeName.begin(), s_typeName.end());
+                const char_t* typeName = t_typeName.c_str();
+
+                LoadDll(config, dllPath, typeName, methodName);
+            }
         }
     }
 
