@@ -23,7 +23,7 @@ AVRT.dll is a Library that Cosmoteer tries to load from it's local path that doe
 I'm using a slightly modified version of [StackOverflowExcept1on's .net core injector](https://github.com/StackOverflowExcept1on/net-core-injector) to manually load a c# helper dll, EML_Helper.dll, to get all current enabled mods (that contain dlls) and pass them back to the original c++ dll which then loads them.
 
 ### --- Developing C# Mods ---
-If you want to make your own c# mod dll, here are a few things you might need to do:
+If you want to make your own c# mod dll, this will get you started:
 - Use target SDK 6.0.403 (Cosmoteer & EML both use this version), specify this in a global.json in your Project Directory. [See more](https://learn.microsoft.com/de-de/dotnet/core/tools/global-json)
 - Use Runtime Framework Version 6.0.11
 - Use Target Framework net6.0-windows
@@ -31,6 +31,9 @@ If you want to make your own c# mod dll, here are a few things you might need to
 
 Important:
 
+- Entry Point namespace **MUST** have the same name as the dll file (but without the .dll)
+- Entry Point class **MUST** be named Main
+- Entry Point method **MUST** be named InitializePatches and have the ```[UnmanagedCallersOnly]``` attribute
 - Use [Harmony](https://github.com/pardeike/Harmony) for patching methods
 - Add Assembly References for Cosmoteer.dll and HalflingCore.dll from your Cosmoteer Bin Path  
   **- Under Properties, change Local copy to false for both**
@@ -58,6 +61,7 @@ namespace System.Runtime.CompilerServices
 }
 ```
 
+You can also look at the [Source Code](https://github.com/C0dingschmuser/EML_TestMod) of the EML Test Mod to get a better understanding on how to set your project up
 
 ### --- Troubleshooting ---
 
