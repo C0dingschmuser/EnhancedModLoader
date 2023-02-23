@@ -151,7 +151,7 @@ DWORD WINAPI dllThread(HMODULE hModule)
     std::string exePath = GetExecutableDirectory();
 
     std::string helperPath = exePath.substr(0, exePath.find("common")) +
-        "workshop\\content\\799600\\2937868590\\leave_this_folder_here\\";
+        "workshop\\content\\799600\\2937901869\\leave_this_folder_here\\";
 
     std::string configPath = exePath + "\\eml_config.ini";
     std::string modsPath = exePath + "\\eml_mods.ini";
