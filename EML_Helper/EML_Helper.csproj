@@ -33,9 +33,11 @@
   <ItemGroup>
     <Reference Include="Cosmoteer">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\Cosmoteer.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HalflingCore">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\HalflingCore.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HalflingPlatformWDX">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\HalflingPlatformWDX.dll</HintPath>
