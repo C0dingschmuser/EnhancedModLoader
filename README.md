@@ -24,7 +24,8 @@ I'm using a slightly modified version of [StackOverflowExcept1on's .net core inj
 
 ### --- Developing C# Mods ---
 If you want to make your own c# mod dll, this will get you started:
-- Use target SDK 6.0.403 (Cosmoteer & EML both use this version), specify this in a global.json in your Project Directory. [See more](https://learn.microsoft.com/de-de/dotnet/core/tools/global-json)
+- Use Visual Studio C# Class Library for .NET or .NET Standard Preset
+- Use target SDK 6.0.403 (Cosmoteer & EML both use this version), specify this in a global.json in your Project Directory. [See more](https://learn.microsoft.com/en-us/dotnet/core/tools/global-json)
 - Use Runtime Framework Version 6.0.11
 - Use Target Framework net6.0-windows
 - Allow Unsafe Blocks
@@ -33,7 +34,7 @@ Important:
 
 - Entry Point namespace **MUST** have the same name as the dll file (but without the .dll)
 - Entry Point class **MUST** be named Main
-- Entry Point method **MUST** be named InitializePatches and have the ```[UnmanagedCallersOnly]``` attribute
+- Entry Point method **MUST** be named ```InitializePatches``` and have the ```[UnmanagedCallersOnly]``` attribute
 - Use [Harmony](https://github.com/pardeike/Harmony) for patching methods
 - Add Assembly References for Cosmoteer.dll and HalflingCore.dll from your Cosmoteer Bin Path  
   **- Under Properties, change Local copy to false for both**

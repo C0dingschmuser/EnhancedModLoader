@@ -78,12 +78,14 @@ namespace EML_Helper
         }
 
         [HarmonyPostfix]
-        private static void Postfix(Halfling.Application.IAppState state, Cosmoteer.Gui.ModsDialog __instance)
+        private static void Postfix(Halfling.Application.IAppState state)
         {
             if(state.GetType() != typeof(TitleScreen) || Main.modsLoaded)
             {
                 return;
             }
+
+            Main.modsLoaded = true;
 
             //Check which dll mods are enabled
 
