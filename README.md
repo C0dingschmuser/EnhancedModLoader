@@ -23,7 +23,12 @@ AVRT.dll is a Library that Cosmoteer tries to load from it's local path that doe
 I'm using a slightly modified version of [StackOverflowExcept1on's .net core injector](https://github.com/StackOverflowExcept1on/net-core-injector) to manually load a c# helper dll, EML_Helper.dll, to get all current enabled mods (that contain dlls) and pass them back to the original c++ dll which then loads them.
 
 ### --- Developing C# Mods ---
+
 If you want to make your own c# mod dll, this will get you started:
+
+**IMPORTANT INFORMATION: Cosmoteer will be updated to .NET 7 soon. This means that Harmony won't work after the Update**  
+**--> You will still be able to write C# Mods, just without Harmony's features <--**
+
 - Use Visual Studio C# Class Library for .NET or .NET Standard Preset
 - Use target SDK 6.0.403 (Cosmoteer & EML both use this version), specify this in a global.json in your Project Directory. [See more](https://learn.microsoft.com/en-us/dotnet/core/tools/global-json)
 - Use Runtime Framework Version 6.0.11
