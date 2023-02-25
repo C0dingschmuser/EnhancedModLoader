@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="include\coreclr_delegates.h" />
     <ClInclude Include="include\hostfxr.h" />
+    <ClInclude Include="include\json.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

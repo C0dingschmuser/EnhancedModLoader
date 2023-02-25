@@ -139,8 +139,9 @@ namespace EML_Helper
                     file.WriteLine(mod);
                 }
 
-                File.WriteAllText(lockPath, "done");
             }
+
+            File.WriteAllText(lockPath, "done");
         }
     }
 }

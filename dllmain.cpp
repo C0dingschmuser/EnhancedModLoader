@@ -4,8 +4,11 @@
 #include <string>
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 #include "include/coreclr_delegates.h";
 #include "include/hostfxr.h";
+#include "include/json.hpp";
+using json = nlohmann::json;
 
 #pragma comment(linker,"/export:AvCreateTaskIndex=C:\\Windows\\System32\\avrt.AvCreateTaskIndex,@1")
 #pragma comment(linker,"/export:AvQuerySystemResponsiveness=C:\\Windows\\System32\\avrt.AvQuerySystemResponsiveness,@2")
@@ -135,6 +138,38 @@ InitializeResult LoadDll(const char_t* runtime_config_path, const char_t* assemb
     hostfxr_close_fptr(ctx);
 }
 
+std::string InitResultToStr(InitializeResult result)
+{
+    std::string data;
+
+    switch (result)
+    {
+        case InitializeResult::Success:
+			data = "Success";
+			break;
+        case InitializeResult::HostFxrLoadError:
+            data = "HostFxrLoadError";
+            break;
+        case InitializeResult::InitializeRuntimeConfigError:
+			data = "InitializeRuntimeConfigError";
+			break;
+        case InitializeResult::GetRuntimeDelegateError:
+            data = "GetRuntimeDelegateError";
+            break;
+        case InitializeResult::EntryPointError:
+            data = "EntryPointError";
+            break;
+    }
+
+    return data;
+}
+
+void LogLine(std::string path, std::string line)
+{
+    std::ofstream log(path, std::ios_base::app | std::ios_base::out);
+    log << line << std::endl;
+}
+
 std::string GetExecutableDirectory()
 {
     char buffer[MAX_PATH];
@@ -154,6 +189,7 @@ DWORD WINAPI dllThread(HMODULE hModule)
         "workshop\\content\\799600\\2937901869\\leave_this_folder_here\\";
 
     std::string configPath = exePath + "\\eml_config.ini";
+    std::string logPath = exePath + "\\eml_log.txt";
     std::string modsPath = exePath + "\\eml_mods.ini";
     std::string lockPath = modsPath + ".lock";
 
@@ -162,6 +198,12 @@ DWORD WINAPI dllThread(HMODULE hModule)
     {
         std::filesystem::remove(lockPath);
     }
+
+    //delete old logfile
+    if (std::filesystem::exists(logPath))
+    {
+		std::filesystem::remove(logPath);
+	}
 
     if (std::filesystem::exists(configPath))
     {
@@ -189,7 +231,6 @@ DWORD WINAPI dllThread(HMODULE hModule)
         }
     }
 
-
     std::string s_config = helperPath + "EML_Helper.runtimeconfig.json";
     std::wstring t_config = std::wstring(s_config.begin(), s_config.end());
     const char_t* config = t_config.c_str();
@@ -206,12 +247,39 @@ DWORD WINAPI dllThread(HMODULE hModule)
 
     if (!std::filesystem::exists(s_dll))
     {
+        LogLine(logPath, "EML_Helper.dll not found! Tried loading from: " + s_dll);
         MessageBoxA(NULL, "EML_Helper.dll not found!\nCheck eml_config.ini in your Cosmoteer Install directory", "Error", MB_OK | MB_ICONERROR);
 		return 0;
     }
 
+    if (!std::filesystem::exists(s_config))
+    {
+        LogLine(logPath, "EML_Helper.runtimeconfig.json not found! Tried loading from: " + s_config);
+        MessageBoxA(NULL, "EML_Helper.runtimeconfig.json not found!\nVerify Mod files, this file needs to be in the same Folder as the EML_Helper.dll\nCheck Log", "Error", MB_OK | MB_ICONERROR);
+        return 0;
+    }
+
+    //Compare Cosmoteer .NET Version and EML_Helper .NET Version
+    std::string cosmoteerConfigPath = exePath + "\\Cosmoteer.runtimeconfig.json";
+
+    std::ifstream f_c_config(cosmoteerConfigPath);
+    std::ifstream f_m_config(s_config);
+
+    json j_c_config = json::parse(f_c_config)["runtimeOptions"]["tfm"];
+    json j_m_config = json::parse(f_m_config)["runtimeOptions"]["tfm"];
+
+    if (j_c_config != j_m_config)
+    {
+        LogLine(logPath, "Version mismatch: Cosmoteer uses " + j_c_config.dump() + " but EML uses " + j_m_config.dump());
+        LogLine(logPath, "Cannot load Mods. Wait for an Update and try again later");
+        MessageBox(NULL, ".NET Version mismatch between Cosmoteer and EML!\nMods cannot load, wait for an Update.\nCheck Log in Bin Folder for more Information", "Error", MB_OK | MB_ICONERROR);
+    }
+
     //Loads helper dll
-    LoadDll(config, dll, typeName, methodName);
+    InitializeResult result = LoadDll(config, dll, typeName, methodName);
+    LogLine(logPath, "Loading EML_Helper.dll: " + InitResultToStr(result));
+
+    //int timer = 
 
     //Wait for mod list
     while (!std::filesystem::exists(lockPath))
@@ -219,6 +287,7 @@ DWORD WINAPI dllThread(HMODULE hModule)
         Sleep(250);
     }
 
+    LogLine(logPath, "Loading Mods...");
     if (std::filesystem::exists(modsPath))
     {
         std::ifstream file(modsPath);
@@ -240,10 +309,13 @@ DWORD WINAPI dllThread(HMODULE hModule)
                 std::wstring t_typeName = std::wstring(s_typeName.begin(), s_typeName.end());
                 const char_t* typeName = t_typeName.c_str();
 
-                LoadDll(config, dllPath, typeName, methodName);
-            }
+                InitializeResult modResult = LoadDll(config, dllPath, typeName, methodName);
+                LogLine(logPath, "Loading " + s_dllPath + ": " + InitResultToStr(modResult));
+            } else LogLine(logPath, "Mod not found: " + s_dllPath);
         }
-    }
+    } else LogLine(logPath, "No mods to load found");
+
+    LogLine(logPath, "All Done.");
 
     FreeLibraryAndExitThread(hModule, 0);
     return dwExit;
