@@ -273,6 +273,7 @@ DWORD WINAPI dllThread(HMODULE hModule)
         LogLine(logPath, "Version mismatch: Cosmoteer uses " + j_c_config.dump() + " but EML uses " + j_m_config.dump());
         LogLine(logPath, "Cannot load Mods. Wait for an Update and try again later");
         MessageBox(NULL, ".NET Version mismatch between Cosmoteer and EML!\nMods cannot load, wait for an Update.\nCheck Log in Bin Folder for more Information", "Error", MB_OK | MB_ICONERROR);
+        return dwExit;
     }
 
     //Loads helper dll
