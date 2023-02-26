@@ -49,8 +49,8 @@ Important:
 
 - Use an unique name for your Mod and ship your ```.runtimeconfig.json``` together with your dll (they must be in the same folder)
 - Entry Point namespace **MUST** have the same name as the dll file (but without the .dll)
-- Entry Point class **MUST** be named Main
-- Entry Point method **MUST** be named ```InitializePatches``` and have the ```[UnmanagedCallersOnly]``` attribute
+- Entry Point class **MUST** be static and named Main
+- Entry Point method **MUST** be static, named ```InitializePatches``` and have the ```[UnmanagedCallersOnly]``` attribute
 - Add Assembly References for Cosmoteer.dll and HalflingCore.dll from your Cosmoteer Bin Path  
   **- Under Properties, change Local copy to false for both**
 - Since most of the Cosmoteer namespace is private, you need an assembly publicizer. I'm using [kraf's Publicizer](https://github.com/krafs/Publicizer).  
