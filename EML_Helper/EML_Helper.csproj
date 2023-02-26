@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
@@ -9,8 +9,7 @@
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <PublicizerRuntimeStrategies>Unsafe</PublicizerRuntimeStrategies>
-    <AnalysisLevel>6.0</AnalysisLevel>
-    <RuntimeFrameworkVersion>6.0.11</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion>7.0.3</RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,12 +21,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Lib.Harmony" Version="2.2.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <Publicize Include="Cosmoteer" />
-    <Publicize Include="HalflingCore" />
+    <Publicize Include="Cosmoteer" IncludeCompilerGeneratedMembers="false" />
+    <Publicize Include="HalflingCore" IncludeCompilerGeneratedMembers="false" />
   </ItemGroup>
   
   <ItemGroup>
@@ -98,5 +96,9 @@
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\System.Windows.Forms.Design.Editors.dll</HintPath>
     </Reference>
   </ItemGroup>
+  
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="call &quot;C:/Users/lasch/Desktop/EML_Build.bat&quot;" />
+  </Target>
 
 </Project>

@@ -1,24 +1,10 @@
-﻿using HarmonyLib;
+﻿using System.Runtime.InteropServices;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using Cosmoteer.Gui;
 using Halfling;
 using Cosmoteer;
-using Cosmoteer.Simulation;
-using Cosmoteer.Bullets;
-using Cosmoteer.Ships.Parts.Weapons;
-using Halfling.Geometry;
-using Halfling.Timing;
-using Cosmoteer.Data;
-using Cosmoteer.Input;
-using Halfling.Input;
-using static Cosmoteer.Input.Inputs;
 using System.Runtime.CompilerServices;
-using Halfling.Serialization.Generic;
-using Cosmoteer.Game;
-using Microsoft.VisualBasic;
-using Cosmoteer.Mods;
-using Halfling.IO;
+using Halfling.Application;
 
 [assembly: IgnoresAccessChecksTo("Cosmoteer")]
 
@@ -43,51 +29,33 @@ namespace EML_Helper
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern int MessageBox(int hWnd, string text, string caption, uint type);
 
-        private static Harmony? harmony;
         public static List<string> modDllPaths = new List<string>();
         public static bool modsLoaded = false;
 
         [UnmanagedCallersOnly]
         public static void InitializePatches()
         {
-            harmony = new Harmony("com.emlhelper.patch");
-
-            Halfling.IO.AbsolutePath userModsPath = Paths.UserModsFolder;
-            string[] tmpDirs = Directory.GetDirectories(Paths.UserModsFolder);
-            //Main.userModsPath = userModsPath.ToString();
-
-            harmony.PatchAll(typeof(Main).Assembly);
+            Halfling.App.Director.FrameEnded += Worker;
         }
 
-        public static void MsgBox(string text, string caption)
+        public static void Worker(object? sender, EventArgs e)
         {
-            MessageBox(0, text, caption, 0);
-        }
+            //Called after each frame
 
-    }
+            IAppState? currentState = App.Director.States.OfType<IAppState>().FirstOrDefault();
 
-    [HarmonyPatch]
-    public class ModEnabledPatch
-    {
-        static MethodBase TargetMethod()
-        {
-            Type[] types = new Type[1];
-            types[0] = typeof(Halfling.Application.IAppState); // AccessTools.TypeByName("Halfling.Application.IAppState");
-
-            return AccessTools.Method(typeof(Halfling.Application.Director), "SetState", types);
-        }
-
-        [HarmonyPostfix]
-        private static void Postfix(Halfling.Application.IAppState state)
-        {
-            if(state.GetType() != typeof(TitleScreen) || Main.modsLoaded)
+            if (currentState != null)
             {
-                return;
+                if(currentState.GetType() == typeof(TitleScreen) && !modsLoaded)
+                {
+                    LoadMods();
+                }
             }
+        }
 
-            Main.modsLoaded = true;
-
-            //Check which dll mods are enabled
+        public static void LoadMods()
+        {
+            modsLoaded = true;
 
             foreach (var (folder, installSource) in Cosmoteer.Mods.ModInfo.GetAllModFolders())
             {
@@ -100,15 +68,15 @@ namespace EML_Helper
                         if (folder.ToString().Length > 0)
                         {
                             bool contains = false;
-                            foreach(string entry in Main.modDllPaths)
+                            foreach (string entry in Main.modDllPaths)
                             {
-                                if(entry.Equals(file))
+                                if (entry.Equals(file))
                                 {
                                     contains = true;
                                 }
                             }
 
-                            if(!contains && !file.Contains("EML_Helper.dll") && !file.Contains("AVRT.dll"))
+                            if (!contains && !file.Contains("EML_Helper.dll") && !file.Contains("AVRT.dll"))
                             {
                                 Main.modDllPaths.Add(file);
                             }
@@ -138,10 +106,11 @@ namespace EML_Helper
                 {
                     file.WriteLine(mod);
                 }
-
             }
 
             File.WriteAllText(lockPath, "done");
+
+            Halfling.App.Director.FrameEnded -= Worker;
         }
     }
 }

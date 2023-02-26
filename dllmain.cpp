@@ -164,10 +164,15 @@ std::string InitResultToStr(InitializeResult result)
     return data;
 }
 
-void LogLine(std::string path, std::string line)
+void LogLine(std::string path, std::string line, bool newLine = true)
 {
     std::ofstream log(path, std::ios_base::app | std::ios_base::out);
-    log << line << std::endl;
+    log << line;
+
+    if (newLine)
+    {
+        log << std::endl;
+    }
 }
 
 std::string GetExecutableDirectory()
@@ -277,10 +282,9 @@ DWORD WINAPI dllThread(HMODULE hModule)
     }
 
     //Loads helper dll
+    LogLine(logPath, "Loading EML_Helper.dll: ", false);
     InitializeResult result = LoadDll(config, dll, typeName, methodName);
-    LogLine(logPath, "Loading EML_Helper.dll: " + InitResultToStr(result));
-
-    //int timer = 
+    LogLine(logPath, InitResultToStr(result));
 
     //Wait for mod list
     while (!std::filesystem::exists(lockPath))
@@ -288,7 +292,7 @@ DWORD WINAPI dllThread(HMODULE hModule)
         Sleep(250);
     }
 
-    LogLine(logPath, "Loading Mods...");
+    LogLine(logPath, "Loading Mods:");
     if (std::filesystem::exists(modsPath))
     {
         std::ifstream file(modsPath);
@@ -310,8 +314,32 @@ DWORD WINAPI dllThread(HMODULE hModule)
                 std::wstring t_typeName = std::wstring(s_typeName.begin(), s_typeName.end());
                 const char_t* typeName = t_typeName.c_str();
 
-                InitializeResult modResult = LoadDll(config, dllPath, typeName, methodName);
-                LogLine(logPath, "Loading " + s_dllPath + ": " + InitResultToStr(modResult));
+                LogLine(logPath, "-> " + s_dllPath + ": ", false);
+
+                //Read json and compare version
+                std::string dllDir = s_dllPath.substr(0, s_dllPath.find_last_of("."));
+                std::string configPath = dllDir + ".runtimeconfig.json";
+
+                if (std::filesystem::exists(configPath))
+                {
+					std::ifstream f_dll_config(configPath);
+					json j_dll_config = json::parse(f_dll_config)["runtimeOptions"]["tfm"];
+
+                    if (j_c_config != j_dll_config)
+                    {
+                        LogLine(logPath, "Error (Outdated: This mod uses " + j_dll_config.dump() + " but Cosmoteer uses " + j_c_config.dump() + ")");
+                    }
+                    else
+                    {
+                        std::wstring tmpMod_config = std::wstring(configPath.begin(), configPath.end());
+                        const char_t* c_tmpMod_config = tmpMod_config.c_str();
+
+                        //Load Mod
+                        InitializeResult modResult = LoadDll(c_tmpMod_config, dllPath, typeName, methodName);
+                        LogLine(logPath, InitResultToStr(modResult));
+                    }
+                }
+                else LogLine(logPath, "Error (No runtimeconfig.json)");
             } else LogLine(logPath, "Mod not found: " + s_dllPath);
         }
     } else LogLine(logPath, "No mods to load found");
