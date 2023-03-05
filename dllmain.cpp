@@ -34,6 +34,12 @@ using json = nlohmann::json;
 //Credits to StackOverflowExcept1on for this injector
 //https://github.com/StackOverflowExcept1on/net-core-injector
 
+#if defined(WIN32) || defined(_WIN32) 
+#define PATH_SEPARATOR "\\" 
+#else 
+#define PATH_SEPARATOR "/" 
+#endif 
+
 class Module
 {
 public:
@@ -292,14 +298,44 @@ DWORD WINAPI dllThread(HMODULE hModule)
         Sleep(250);
     }
 
+    std::string client_only_mods_dir = exePath + PATH_SEPARATOR + "EML_Mods";
+
+    LogLine(logPath, "Looking in client-only mods dir: " + client_only_mods_dir, true);
+
+    std::vector<std::string> mods_to_load;
+
+    if (std::filesystem::exists(client_only_mods_dir)) {
+        LogLine(logPath, "Found client-only mods dir", true);
+        for (auto& p : std::filesystem::recursive_directory_iterator(client_only_mods_dir)) {
+            if (p.path().string().find(".dll") != std::string::npos) {
+                LogLine(logPath, p.path().string() + "\n-> Found .dll to load", true);
+                mods_to_load.push_back(p.path().string());
+            }
+            
+        }
+    }
+    else {
+        LogLine(logPath, "Client-only mods dir. does not exist. Creating.", true);
+        std::filesystem::create_directory(client_only_mods_dir);
+    }
+
     LogLine(logPath, "Loading Mods:");
-    if (std::filesystem::exists(modsPath))
+    if (std::filesystem::exists(modsPath) || mods_to_load.size() > 0)
     {
         std::ifstream file(modsPath);
 
-        for (std::string line; getline(file, line); )
+
+        for (std::string line; getline(file, line);) {
+            mods_to_load.push_back(line);
+        }
+
+        for (auto &line : mods_to_load )
         {
+            
+            LogLine(logPath, "loading from path: " + line, true);
+
             std::string s_dllPath = line;
+
 
             if (std::filesystem::exists(s_dllPath))
             {
