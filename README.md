@@ -32,10 +32,9 @@ If your game crashes check the ```eml_log.txt``` file in the bin directory and m
 
 If you want to make your own c# mod dll, this will get you started:
 
-**IMPORTANT INFORMATION: Cosmoteer will be updated to .NET 7 soon (probably 03.03). Because of this, you cannot use Harmony since it does not Support .NET 7 (yet).**
-**The following Steps are for Cosmoteer 0.21.1_rc1 (Steam Beta -> unstable as of now) and upwards.**
+**IMPORTANT INFORMATION: Cosmoteer uses .NET 7. Because of this, you cannot use Harmony since it does not Support .NET 7 (yet).**
 
-- Use Cosmoteers unstable Beta branch and the [.NET 7 Version of EML](https://github.com/C0dingschmuser/EnhancedModLoader/releases)
+- Use the [.NET 7 Version of EML](https://github.com/C0dingschmuser/EnhancedModLoader/releases)
 - Use Visual Studio C# Class Library for .NET or .NET Standard Preset
 - Use target SDK 7.0.200 (Cosmoteer & EML both use this version), specify this in a global.json in your Project Directory. [See more](https://learn.microsoft.com/en-us/dotnet/core/tools/global-json)
 - Use Runtime Framework Version 7.0.3
