@@ -33,7 +33,8 @@ If your game crashes check the ```eml_log.txt``` file in the bin directory and m
 
 If you want to make your own c# mod dll, this will get you started:
 
-**IMPORTANT INFORMATION: Cosmoteer uses .NET 7. Because of this, you cannot use Harmony since it does not Support .NET 7 (yet).**
+**IMPORTANT INFORMATION: Cosmoteer uses .NET 7. Because of this, you cannot use Harmony since it does not Support .NET 7(yet).**  
+There is an [alpha version of Harmony](https://github.com/pardeike/Harmony/tree/feature/monomod-core) now that supports .NET 7 but you need to compile it yourself and i haven't tested it yet.
 
 - Use the [.NET 7 Version of EML](https://github.com/C0dingschmuser/EnhancedModLoader/releases) / Workshop version
 - Use Visual Studio C# Class Library for .NET or .NET Standard Preset
