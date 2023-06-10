@@ -375,7 +375,13 @@ DWORD WINAPI dllThread(HMODULE hModule)
                         LogLine(logPath, InitResultToStr(modResult));
                     }
                 }
-                else LogLine(logPath, "Error (No runtimeconfig.json)");
+                else
+                {
+                    LogLine(logPath, "No .runtimeconfig.json -> fallback to eml default config: ", false);
+                    //Load Mod
+                    InitializeResult modResult = LoadDll(config, dllPath, typeName, methodName);
+                    LogLine(logPath, InitResultToStr(modResult));
+                }
             } else LogLine(logPath, "Mod not found: " + s_dllPath);
         }
     } else LogLine(logPath, "No mods to load found");

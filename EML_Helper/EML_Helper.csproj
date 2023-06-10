@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="C:\Users\lasch\.nuget\packages\krafs.publicizer\2.2.1\contentfiles\cs\any\Publicizer\IgnoresAccessChecksToAttribute.cs" />
+    <Compile Remove="C:\Users\Nicolas B\.nuget\packages\krafs.publicizer\2.2.1\contentfiles\cs\any\Publicizer\IgnoresAccessChecksToAttribute.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,7 +31,6 @@
   <ItemGroup>
     <Reference Include="Cosmoteer">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\Cosmoteer.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="HalflingCore">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cosmoteer\Bin\HalflingCore.dll</HintPath>
@@ -98,7 +97,7 @@
   </ItemGroup>
   
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="call &quot;C:/Users/lasch/Desktop/EML_Build.bat&quot;" />
+    <Exec Command="call &quot;C:/Users/Nicolas B/Desktop/EML_Build.bat&quot;" />
   </Target>
 
 </Project>

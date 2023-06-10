@@ -5,6 +5,14 @@ using Halfling;
 using Cosmoteer;
 using System.Runtime.CompilerServices;
 using Halfling.Application;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using Application = System.Windows.Forms.Application;
+using System.Numerics;
+using Cosmoteer.Mods;
+using Halfling.IO;
+using Microsoft.VisualBasic;
+using System.IO;
 
 [assembly: IgnoresAccessChecksTo("Cosmoteer")]
 
@@ -53,36 +61,90 @@ namespace EML_Helper
             }
         }
 
+        public static List<Halfling.IO.AbsolutePath> GetAllModPaths()
+        {
+            List<Halfling.IO.AbsolutePath> modPaths = new List<Halfling.IO.AbsolutePath>();
+
+            if (Directory.Exists(Paths.BuiltInModsFolder) && Paths.BuiltInModsFolder != Paths.UserModsFolder)
+            {
+                string[] directories = Directory.GetDirectories((string?)Paths.BuiltInModsFolder);
+                foreach (string text in directories)
+                {
+                    modPaths.Add((Halfling.IO.AbsolutePath)text);
+                }
+            }
+
+            if (Directory.Exists(Paths.UserModsFolder))
+            {
+                string[] directories = Directory.GetDirectories((string?)Paths.UserModsFolder);
+                foreach (string text2 in directories)
+                {
+                    modPaths.Add((Halfling.IO.AbsolutePath)text2);
+                }
+            }
+
+            string exeDir = Application.ExecutablePath;
+            //only get directory
+            exeDir = exeDir.Substring(0, exeDir.LastIndexOf('\\') + 1);
+            //go up 3 directories
+            int lastIndex = exeDir.LastIndexOf('\\');
+            if (lastIndex != -1)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    lastIndex = exeDir.LastIndexOf('\\', lastIndex - 1);
+                    if (lastIndex == -1)
+                        break;
+                }
+            }
+            string workshopDir = lastIndex != -1 ? exeDir.Substring(0, lastIndex) : exeDir;
+
+            workshopDir += "\\workshop\\content\\799600\\";
+
+            string[] wdirectories = Directory.GetDirectories(workshopDir);
+            foreach(string folder in wdirectories)
+            {
+                modPaths.Add((Halfling.IO.AbsolutePath)folder);
+            }
+
+            return modPaths;
+        }
+
+        public static void GetFolderFiles(Halfling.IO.AbsolutePath folder)
+        {
+            string[] files =
+                        Directory.GetFiles(folder.ToString() + "\\", "*.dll", SearchOption.AllDirectories);
+            foreach (string file in files)
+            {
+                if (Settings.EnabledMods.Contains(folder))
+                {
+                    if (folder.ToString().Length > 0)
+                    {
+                        bool contains = false;
+                        foreach (string entry in Main.modDllPaths)
+                        {
+                            if (entry.Equals(file))
+                            {
+                                contains = true;
+                            }
+                        }
+
+                        if (!contains && !file.Contains("EML_Helper.dll") && !file.Contains("AVRT.dll"))
+                        {
+                            Main.modDllPaths.Add(file);
+                        }
+                    }
+                }
+            }
+        }
+
         public static void LoadMods()
         {
             modsLoaded = true;
 
-            foreach (var (folder, installSource) in Cosmoteer.Mods.ModInfo.GetAllModFolders())
+            foreach(Halfling.IO.AbsolutePath folder in GetAllModPaths())
             {
-                string[] files =
-                    Directory.GetFiles(folder.ToString() + "\\", "*.dll", SearchOption.AllDirectories);
-                foreach (string file in files)
-                {
-                    if (Settings.EnabledMods.Contains(folder))
-                    {
-                        if (folder.ToString().Length > 0)
-                        {
-                            bool contains = false;
-                            foreach (string entry in Main.modDllPaths)
-                            {
-                                if (entry.Equals(file))
-                                {
-                                    contains = true;
-                                }
-                            }
-
-                            if (!contains && !file.Contains("EML_Helper.dll") && !file.Contains("AVRT.dll"))
-                            {
-                                Main.modDllPaths.Add(file);
-                            }
-                        }
-                    }
-                }
+                GetFolderFiles(folder);
             }
 
             //Write enabled mods to file
